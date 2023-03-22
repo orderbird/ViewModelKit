@@ -28,7 +28,16 @@
 }
 
 - (nullable VMKViewModel *)swipedRowActionAtIndexPath:(NSIndexPath *)indexPath {
+    // in fact the action is executed, not just view model veing returned
+    // if nil is returned, removal had happened
+    // else, if instance of viewModel returned, positions were just vioded, so no removal
     return [self.delegate tableViewRowActionViewModel:self rowActionIndexPath:indexPath];
+}
+
+- (nullable VMKViewModel *)swipedRowAction {
+    return [self.delegate tableViewRowActionViewModel:self];
+    //TODO: pos should implement this method also
+    // search for `rowActionIndexPath` in PRO
 }
 
 @end

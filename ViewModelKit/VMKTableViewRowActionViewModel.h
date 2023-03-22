@@ -21,6 +21,10 @@ typedef NS_ENUM(NSUInteger, VMKTableViewRowActionViewModelStyle) {
 
 @protocol VMKTableViewRowActionViewModelDelegate <NSObject>
 - (nullable VMKViewModel *)tableViewRowActionViewModel:(VMKTableViewRowActionViewModel *)tableViewRowActionViewModel rowActionIndexPath:(NSIndexPath *)indexPath;
+
+@optional
+- (nullable VMKViewModel *)tableViewRowActionViewModel:(VMKTableViewRowActionViewModel *)tableViewRowActionViewModel;
+
 @end
 
 @interface VMKTableViewRowActionViewModel : VMKViewModel
@@ -34,6 +38,9 @@ typedef NS_ENUM(NSUInteger, VMKTableViewRowActionViewModelStyle) {
 - (instancetype)initWithTitle:(nullable NSString *)title style:(VMKTableViewRowActionViewModelStyle)style backgroundColor:(nullable UIColor *)backgroundColor delegate:(nullable id<VMKTableViewRowActionViewModelDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
 - (nullable VMKViewModel *)swipedRowActionAtIndexPath:(NSIndexPath *)indexPath;
+
+- (nullable VMKViewModel *)swipedRowAction;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -21,6 +21,50 @@
     return self;
 }
 
+#pragma mark - UISwipeActionsConfiguration
+- (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration {
+    
+    NSMutableArray<UIContextualAction *> * actions = [NSMutableArray array];
+    
+    for (VMKTableViewRowActionViewModel *rowAction in self.rowActionsType.rowActions) {
+        
+        UIContextualActionStyle style = [self contextualActionStyleFromRowActionViewModel: rowAction];
+        
+        UIContextualAction *tableViewAction = [UIContextualAction contextualActionWithStyle: style
+                                                                                      title: rowAction.title handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+            //[self handleContextualRowAction: rowAction atIndexPath: indexPath];
+            VMKViewModel *viewModel = [rowAction swipedRowAction];
+            if (viewModel) {
+                // positions were voided
+                VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
+                [tableViewDataSource requestViewWithViewModel:viewModel fromView: sourceView];
+                // view model is returned => it's actually an alert view model
+                completionHandler(NO);
+            } else {
+                // positions were removed
+                completionHandler(YES);
+            }
+        }];
+        
+        tableViewAction.backgroundColor = rowAction.backgroundColor;
+        [actions addObject: tableViewAction];
+    }
+    
+    UISwipeActionsConfiguration * config = [UISwipeActionsConfiguration configurationWithActions: actions];
+    config.performsFirstActionWithFullSwipe = NO;
+    return config;
+}
+
+- (UIContextualActionStyle)contextualActionStyleFromRowActionViewModel:(VMKTableViewRowActionViewModel *)rowActionViewModel {
+    if (rowActionViewModel.style == VMKTableViewRowActionViewModelStyleDestructive) {
+        return UIContextualActionStyleDestructive;
+    }
+    return UIContextualActionStyleNormal;
+
+}
+
+
+#pragma mark - UITableViewRowAction API
 - (nullable NSArray<UITableViewRowAction *> *)tableViewRowActions {
     
     NSMutableArray *tableViewActions = [[NSMutableArray alloc] initWithCapacity:self.rowActionsType.rowActions.count];

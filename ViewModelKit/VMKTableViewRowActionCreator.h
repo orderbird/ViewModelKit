@@ -17,6 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithTableView:(UITableView *)tableView rowActionsType:(id<VMKTableViewRowActionsType>)rowActionsType NS_DESIGNATED_INITIALIZER;
 
 - (nullable NSArray<UITableViewRowAction *> *)tableViewRowActions;
+//API_DEPRECATED("Use NewAPIToBeCreated instead.", ios(8.0, 15.0));
+
+
+// TODO: mark as awailable since iOS15
+- (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration;
+
 @end
 
 NS_ASSUME_NONNULL_END

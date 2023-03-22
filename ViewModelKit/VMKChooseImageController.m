@@ -35,7 +35,7 @@
     }
 
     _imagePickerController = [[UIImagePickerController alloc] init];
-    _imagePickerController.modalPresentationStyle = UIModalTransitionStyleCrossDissolve;
+    _imagePickerController.modalPresentationStyle = UIModalPresentationFormSheet;
     _imagePickerController.delegate = self;
     _imagePickerController.allowsEditing = YES;
     
