@@ -168,19 +168,12 @@ NS_ASSUME_NONNULL_END
 #pragma mark - presentController
 
 - (void)presentControllerWithViewModel:(VMKViewModel *)viewModel inView:(UIView *)view {
-    
-    NSLog(@"presentControllerWithViewModel view %@", view);
-    NSLog(@"presentControllerWithViewModel view.super %@", view.superview);
-    NSLog(@"presentControllerWithViewModel view.super.super %@", view.superview.superview);
-    
     if (!viewModel) {
-        NSLog(@"presentControllerWithViewModel no vm");
         return;
     }
     
     if (!view) {
         view = self.view;
-        NSLog(@"presentControllerWithViewModel no view -> assign self %@", self);
     }
     
     if ([viewModel conformsToProtocol:@protocol(VMKAlertViewModelType)]) {

@@ -37,7 +37,10 @@
             if (viewModel) {
                 // positions were voided
                 VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
-                [tableViewDataSource requestViewWithViewModel:viewModel fromView: sourceView];
+                UIView * cellView = sourceView.superview.superview.superview;
+                UIView * viewToSend = cellView ? cellView : sourceView;
+                NSLog(@"swipeActionsConfiguration sourceView %@", cellView);
+                [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
                 // view model is returned => it's actually an alert view model
                 completionHandler(NO);
             } else {
