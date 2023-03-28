@@ -23,7 +23,20 @@ typedef NS_ENUM(NSUInteger, VMKTableViewRowActionViewModelStyle) {
 - (nullable VMKViewModel *)tableViewRowActionViewModel:(VMKTableViewRowActionViewModel *)tableViewRowActionViewModel rowActionIndexPath:(NSIndexPath *)indexPath;
 
 @optional
-- (nullable VMKViewModel *)tableViewRowActionViewModel:(VMKTableViewRowActionViewModel *)tableViewRowActionViewModel;
+// Purpose of `indexPath` is to get a view to present a popover from.
+// `UISwipeActionsConfiguration` handler provide a `sourceView`. So `indexPath` is not needed.
+// Method above is preserved for backwards compatibility
+- (nullable VMKViewModel *)tableViewRowActionViewModel:(VMKTableViewRowActionViewModel *)tableViewRowActionViewModel API_AVAILABLE(ios(13));
+
+/**
+ @discussion
+`UISwipeActionsConfiguration` handler provide a `sourceView` which is an instance of `UISwipeActionStandardButton`
+ and it's frame is shifted leftwards from the left edge of a tableview. Which results in corresponding offset  of the popover, if it's presented from that view.
+ This method provides a control on which view is returned as sourceView for `presentControllerWithViewModel: inView:`
+ @return YES to get UISwipeActionStandardButton.superview.superview,
+ NO - to get unchanged `sourceView` from `UISwipeActionsConfiguration` handler
+*/
+- (BOOL)shouldOverrideSourceViewForSwipeAction API_AVAILABLE(ios(13));
 
 @end
 
@@ -39,7 +52,7 @@ typedef NS_ENUM(NSUInteger, VMKTableViewRowActionViewModelStyle) {
 
 - (nullable VMKViewModel *)swipedRowActionAtIndexPath:(NSIndexPath *)indexPath;
 
-- (nullable VMKViewModel *)swipedRowAction;
+- (nullable VMKViewModel *)swipedRowAction API_AVAILABLE(ios(13));;
 
 @end
 

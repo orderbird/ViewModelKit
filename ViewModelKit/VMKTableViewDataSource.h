@@ -29,8 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)requestViewWithViewModel:(VMKViewModel *)viewModel atIndexPath:(NSIndexPath *)indexPath;
 
-// TODO: add if Awailable
-- (void)requestViewWithViewModel:(VMKViewModel *)viewModel fromView:(UIView *)sourceView;
+- (void)requestViewWithViewModel:(VMKViewModel *)viewModel fromView:(UIView *)sourceView API_AVAILABLE(ios(13));
 
 - (nullable UIView<VMKViewHeaderFooterType> *)tableView:(UITableView *)tableView headerViewAtSection:(NSInteger)section;
 @end

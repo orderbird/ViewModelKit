@@ -22,6 +22,7 @@
 }
 
 #pragma mark - UISwipeActionsConfiguration
+
 - (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration {
     
     NSMutableArray<UIContextualAction *> * actions = [NSMutableArray array];
@@ -32,14 +33,13 @@
         
         UIContextualAction *tableViewAction = [UIContextualAction contextualActionWithStyle: style
                                                                                       title: rowAction.title handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
-            //[self handleContextualRowAction: rowAction atIndexPath: indexPath];
             VMKViewModel *viewModel = [rowAction swipedRowAction];
             if (viewModel) {
                 // positions were voided
                 VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
+                BOOL shouldOverrideSourceViewForSwipeAction = [rowAction.delegate shouldOverrideSourceViewForSwipeAction];
                 UIView * cellView = sourceView.superview.superview;
-                UIView * viewToSend = cellView ? cellView : sourceView;
-                NSLog(@"swipeActionsConfiguration sourceView %@", cellView);
+                UIView * viewToSend = shouldOverrideSourceViewForSwipeAction ? cellView : sourceView;
                 [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
                 // view model is returned => it's actually an alert view model
                 completionHandler(NO);
@@ -66,14 +66,16 @@
 
 }
 
-
 #pragma mark - UITableViewRowAction API
 - (nullable NSArray<UITableViewRowAction *> *)tableViewRowActions {
     
     NSMutableArray *tableViewActions = [[NSMutableArray alloc] initWithCapacity:self.rowActionsType.rowActions.count];
     for (VMKTableViewRowActionViewModel *rowAction in self.rowActionsType.rowActions) {
         
-        UITableViewRowActionStyle style = [self styleFromRowActionViewModel:rowAction];
+        UITableViewRowActionStyle style = UITableViewRowActionStyleNormal;
+        if (rowAction.style == VMKTableViewRowActionViewModelStyleDestructive) {
+            style = UITableViewRowActionStyleDestructive;
+        }
         UITableViewRowAction *tableViewAction = [UITableViewRowAction rowActionWithStyle:style title:rowAction.title handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
     
             // the self must be a strong pointer because the creator object is released after creating the objects.
@@ -84,15 +86,6 @@
         [tableViewActions addObject:tableViewAction];
     }
     return tableViewActions;
-}
-
-- (UITableViewRowActionStyle)styleFromRowActionViewModel:(VMKTableViewRowActionViewModel *)rowActionViewModel {
-    
-    if (rowActionViewModel.style == VMKTableViewRowActionViewModelStyleDestructive) {
-        return UITableViewRowActionStyleDestructive;
-    }
-    
-    return UITableViewRowActionStyleNormal;
 }
 
 - (void)handleRowAction:(VMKTableViewRowActionViewModel *)rowAction atIndexPath:(NSIndexPath *)indexPath {
