@@ -169,12 +169,15 @@ NS_ASSUME_NONNULL_END
 
 - (void)presentControllerWithViewModel:(VMKViewModel *)viewModel inView:(UIView *)view {
     
+    NSLog(@"presentControllerWithViewModel view %@", view);
     if (!viewModel) {
+        NSLog(@"presentControllerWithViewModel no vm");
         return;
     }
     
     if (!view) {
         view = self.view;
+        NSLog(@"presentControllerWithViewModel no view -> assign self %@", self);
     }
     
     if ([viewModel conformsToProtocol:@protocol(VMKAlertViewModelType)]) {
