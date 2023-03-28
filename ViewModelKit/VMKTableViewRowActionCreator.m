@@ -37,7 +37,7 @@
             if (viewModel) {
                 // positions were voided
                 VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
-                UIView * cellView = sourceView.superview.superview.superview;
+                UIView * cellView = sourceView.superview.superview;
                 UIView * viewToSend = cellView ? cellView : sourceView;
                 NSLog(@"swipeActionsConfiguration sourceView %@", cellView);
                 [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
