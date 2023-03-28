@@ -36,8 +36,6 @@
 
 - (nullable VMKViewModel *)swipedRowAction {
     return [self.delegate tableViewRowActionViewModel:self];
-    //TODO: pos should implement this method also
-    // search for `rowActionIndexPath` in PRO
 }
 
 @end
