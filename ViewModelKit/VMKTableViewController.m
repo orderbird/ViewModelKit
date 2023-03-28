@@ -170,6 +170,9 @@ NS_ASSUME_NONNULL_END
 - (void)presentControllerWithViewModel:(VMKViewModel *)viewModel inView:(UIView *)view {
     
     NSLog(@"presentControllerWithViewModel view %@", view);
+    NSLog(@"presentControllerWithViewModel view.super %@", view.superview);
+    NSLog(@"presentControllerWithViewModel view.super.super %@", view.superview.superview);
+    
     if (!viewModel) {
         NSLog(@"presentControllerWithViewModel no vm");
         return;
