@@ -26,27 +26,27 @@
 - (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration {
     
     NSMutableArray<UIContextualAction *> * actions = [NSMutableArray array];
-    
+    __weak __typeof(self) weakSelf = self;
     for (VMKTableViewRowActionViewModel *rowAction in self.rowActionsType.rowActions) {
-        
         UIContextualActionStyle style = [self contextualActionStyleFromRowActionViewModel: rowAction];
-        
         UIContextualAction *tableViewAction = [UIContextualAction contextualActionWithStyle: style
                                                                                       title: rowAction.title handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
             VMKViewModel *viewModel = [rowAction swipedRowAction];
+            BOOL rowHasBeenModified = NO;
             if (viewModel) {
                 // positions were voided
-                VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
+                VMKTableViewDataSource *tableViewDataSource = weakSelf.tableView.dataSource;
                 BOOL shouldOverrideSourceViewForSwipeAction = [rowAction.delegate shouldOverrideSourceViewForSwipeAction];
+                [weakSelf cellFrom: sourceView];
                 UIView * cellView = sourceView.superview.superview;
                 UIView * viewToSend = shouldOverrideSourceViewForSwipeAction ? cellView : sourceView;
                 [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
                 // view model is returned => it's actually an alert view model
-                completionHandler(NO);
             } else {
                 // positions were removed
-                completionHandler(YES);
+                rowHasBeenModified = YES;
             }
+            completionHandler(rowHasBeenModified);
         }];
         
         tableViewAction.backgroundColor = rowAction.backgroundColor;
@@ -56,6 +56,19 @@
     UISwipeActionsConfiguration * config = [UISwipeActionsConfiguration configurationWithActions: actions];
     config.performsFirstActionWithFullSwipe = NO;
     return config;
+}
+
+- (UIView *)cellFrom:(UIView *)view {
+    UIView * result = view;
+    NSLog(@"cell from %@", view);
+    int i = 0;
+    while (result != nil) {
+        result = result.superview;
+        NSLog(@"---- %d %@", i, result);
+        i++;
+    }
+    NSLog(@"cell from return %@", result);
+    return result;
 }
 
 - (UIContextualActionStyle)contextualActionStyleFromRowActionViewModel:(VMKTableViewRowActionViewModel *)rowActionViewModel {
