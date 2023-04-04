@@ -88,14 +88,10 @@
 
 - (UIView *)getSuperViewOfClass:(Class)aClass fromView:(UIView *)view {
     UIView * result = view;
-    NSLog(@"cell from %@", view);
-    int i = 0;
     while (result && [result isKindOfClass: aClass] == NO) {
         result = result.superview;
-        NSLog(@"---- %d %@", i, result);
-        i++;
     }
-    NSLog(@"cell from return %@", result);
+    NSLog(@"VMK -> getSuperViewOfClass return %@", result);
     return result;
 }
 
