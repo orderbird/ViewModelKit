@@ -38,4 +38,18 @@
     return [self.delegate tableViewRowActionViewModel:self];
 }
 
+- (UITableViewRowActionStyle)tableViewRowActionStyle {
+    if (self.style == VMKTableViewRowActionViewModelStyleDestructive) {
+        return UITableViewRowActionStyleDestructive;
+    }
+    return UITableViewRowActionStyleNormal;
+}
+
+- (UIContextualActionStyle)contextualActionStyle {
+    if (self.style == VMKTableViewRowActionViewModelStyleDestructive) {
+        return UIContextualActionStyleDestructive;
+    }
+    return UIContextualActionStyleNormal;
+}
+
 @end

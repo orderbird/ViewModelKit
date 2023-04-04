@@ -52,7 +52,10 @@ typedef NS_ENUM(NSUInteger, VMKTableViewRowActionViewModelStyle) {
 
 - (nullable VMKViewModel *)swipedRowActionAtIndexPath:(NSIndexPath *)indexPath;
 
-- (nullable VMKViewModel *)swipedRowAction API_AVAILABLE(ios(13));;
+- (UITableViewRowActionStyle)tableViewRowActionStyle API_DEPRECATED("Use contextualActionStyle instead.", ios(8.0, 13.0));
+
+- (nullable VMKViewModel *)swipedRowAction API_AVAILABLE(ios(13));
+- (UIContextualActionStyle)contextualActionStyle API_AVAILABLE(ios(13));
 
 @end
 
