@@ -26,7 +26,7 @@
 - (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration {
     
     NSMutableArray<UIContextualAction *> * actions = [NSMutableArray array];
-    __weak __typeof(self) weakSelf = self;
+//    __weak __typeof(self) weakSelf = self;
     for (VMKTableViewRowActionViewModel *rowAction in self.rowActionsType.rowActions) {
         UIContextualActionStyle style = [self contextualActionStyleFromRowActionViewModel: rowAction];
         UIContextualAction *tableViewAction = [UIContextualAction contextualActionWithStyle: style
@@ -35,9 +35,9 @@
             BOOL rowHasBeenModified = NO;
             if (viewModel) {
                 // positions were voided
-                VMKTableViewDataSource *tableViewDataSource = weakSelf.tableView.dataSource;
+                VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
                 BOOL shouldOverrideSourceViewForSwipeAction = [rowAction.delegate shouldOverrideSourceViewForSwipeAction];
-                [weakSelf cellFrom: sourceView];
+                [self cellFrom: sourceView];
                 UIView * cellView = sourceView.superview.superview;
                 UIView * viewToSend = shouldOverrideSourceViewForSwipeAction ? cellView : sourceView;
                 [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
