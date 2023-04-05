@@ -24,7 +24,6 @@
 #pragma mark - UISwipeActionsConfiguration
 
 - (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration {
-    Class swipeContainer = NSClassFromString(@"_UITableViewCellSwipeContainerView");
     NSMutableArray<UIContextualAction *> * actions = [NSMutableArray array];
     for (VMKTableViewRowActionViewModel *rowAction in self.rowActionsType.rowActions) {
         UIContextualAction *tableViewAction = [UIContextualAction contextualActionWithStyle: rowAction.contextualActionStyle
@@ -35,8 +34,7 @@
                 // positions were voided
                 VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
                 BOOL shouldOverrideSourceViewForSwipeAction = [rowAction.delegate shouldOverrideSourceViewForSwipeAction];
-                UIView * cellView = [self getSuperViewOfClass: swipeContainer fromView: sourceView];
-                //UIView * cellView = sourceView.superview.superview;
+                UIView * cellView = sourceView.superview.superview; //UISwipeActionPullView->_UITableViewCellSwipeContainerView
                 UIView * viewToSend = shouldOverrideSourceViewForSwipeAction ? cellView : sourceView;
                 [tableViewDataSource requestViewWithViewModel:viewModel fromView: viewToSend];
                 // view model is returned => it's actually an alert view model
@@ -82,17 +80,6 @@
         VMKTableViewDataSource *tableViewDataSource = self.tableView.dataSource;
         [tableViewDataSource requestViewWithViewModel:viewModel atIndexPath:indexPath];
     }
-}
-
-#pragma mark - helper
-
-- (UIView *)getSuperViewOfClass:(Class)aClass fromView:(UIView *)view {
-    UIView * result = view;
-    while (result && [result isKindOfClass: aClass] == NO) {
-        result = result.superview;
-    }
-    NSLog(@"VMK -> getSuperViewOfClass return %@", result);
-    return result;
 }
 
 @end
