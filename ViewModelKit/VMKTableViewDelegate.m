@@ -63,10 +63,7 @@
     return proposedDestinationIndexPath;
 }
 
-#pragma mark - Managing Accessory Views
-
-- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (nullable VMKTableViewRowActionCreator *)rowActionCreatorForTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath {
     VMKTableViewDataSource *dataSource = [self dataSourceFromTableView:tableView];
     VMKViewModel<VMKCellType> *cvm = [dataSource viewModelAtIndexPath:indexPath];
     
@@ -74,10 +71,22 @@
         id<VMKTableViewRowActionsType> rowActionsType = [cvm rowActions];
         if (rowActionsType) {
             VMKTableViewRowActionCreator *creator = [[VMKTableViewRowActionCreator alloc] initWithTableView:tableView rowActionsType:rowActionsType];
-            return [creator tableViewRowActions];
+            return creator;
         }
     }
     return nil;
+}
+
+#pragma mark - Managing Accessory Views
+
+- (nullable UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
+    VMKTableViewRowActionCreator *creator = [self rowActionCreatorForTableView: tableView atIndexPath: indexPath];
+    return [creator swipeActionsConfiguration];
+}
+
+- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    VMKTableViewRowActionCreator *creator = [self rowActionCreatorForTableView: tableView atIndexPath: indexPath];
+    return [creator tableViewRowActions];
 }
 
 #pragma mark - Forwarding unhandled methods to real delegate

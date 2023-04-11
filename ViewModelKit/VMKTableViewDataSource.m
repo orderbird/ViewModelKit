@@ -68,6 +68,10 @@
     [self.delegate requestViewWithViewModel:viewModel atIndexPath:indexPath];
 }
 
+- (void)requestViewWithViewModel:(VMKViewModel *)viewModel fromView:(UIView *)sourceView {
+    [self.delegate requestViewWithViewModel:viewModel fromView: sourceView];
+}
+
 #pragma mark - VMDataSourceDelegate
 
 - (void)dataSource:(VMKDataSource *)dataSource didUpdateChangeSet:(VMKChangeSet *)changeSet {

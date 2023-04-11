@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)dataSource:(VMKTableViewDataSource *)dataSource headerViewIdentifierAtSection:(NSInteger)section;
 
 - (void)dataSource:(VMKTableViewDataSource *)dataSource configureHeaderView:(UITableViewHeaderFooterView *)cell withViewModel:(VMKViewModel<VMKHeaderFooterType> *)viewModel;
+
+- (void)requestViewWithViewModel:(VMKViewModel *)viewModel fromView:(UIView *)sourceView API_AVAILABLE(ios(13));
 @end
 
 NS_ASSUME_NONNULL_END

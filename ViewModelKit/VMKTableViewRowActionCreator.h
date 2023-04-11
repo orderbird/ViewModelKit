@@ -16,7 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithTableView:(UITableView *)tableView rowActionsType:(id<VMKTableViewRowActionsType>)rowActionsType NS_DESIGNATED_INITIALIZER;
 
-- (nullable NSArray<UITableViewRowAction *> *)tableViewRowActions;
+- (nullable NSArray<UITableViewRowAction *> *)tableViewRowActions API_DEPRECATED("Use swipeActionsConfiguration instead.", ios(8.0, 13.0));
+
+- (nullable UISwipeActionsConfiguration *)swipeActionsConfiguration API_AVAILABLE(ios(13));
+
 @end
 
 NS_ASSUME_NONNULL_END

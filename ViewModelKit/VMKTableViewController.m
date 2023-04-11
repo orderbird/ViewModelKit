@@ -168,7 +168,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - presentController
 
 - (void)presentControllerWithViewModel:(VMKViewModel *)viewModel inView:(UIView *)view {
-    
     if (!viewModel) {
         return;
     }
@@ -270,9 +269,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)requestViewWithViewModel:(VMKViewModel *)viewModel atIndexPath:(nonnull NSIndexPath *)indexPath {
-    
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     [self presentControllerWithViewModel:viewModel inView:cell];
+}
+
+- (void)requestViewWithViewModel:(VMKViewModel *)viewModel fromView:(UIView *)sourceView {
+    [self presentControllerWithViewModel:viewModel inView: sourceView];
 }
 
 #pragma mark - VMKTableViewDataSourceDelegate optional section header

@@ -28,7 +28,28 @@
 }
 
 - (nullable VMKViewModel *)swipedRowActionAtIndexPath:(NSIndexPath *)indexPath {
+    // in fact an action could be is executed, not just view model being returned
+    // if nil is returned, an action(removal) had happened
+    // else, if instance of viewModel returned, positions were just vioded, so no removal
     return [self.delegate tableViewRowActionViewModel:self rowActionIndexPath:indexPath];
+}
+
+- (nullable VMKViewModel *)swipedRowAction {
+    return [self.delegate tableViewRowActionViewModel:self];
+}
+
+- (UITableViewRowActionStyle)tableViewRowActionStyle {
+    if (self.style == VMKTableViewRowActionViewModelStyleDestructive) {
+        return UITableViewRowActionStyleDestructive;
+    }
+    return UITableViewRowActionStyleNormal;
+}
+
+- (UIContextualActionStyle)contextualActionStyle {
+    if (self.style == VMKTableViewRowActionViewModelStyleDestructive) {
+        return UIContextualActionStyleDestructive;
+    }
+    return UIContextualActionStyleNormal;
 }
 
 @end
