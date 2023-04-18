@@ -50,7 +50,7 @@
     }
     
     UISwipeActionsConfiguration * config = [UISwipeActionsConfiguration configurationWithActions: actions];
-    config.performsFirstActionWithFullSwipe = NO;
+    config.performsFirstActionWithFullSwipe = YES;
     return config;
 }
 
