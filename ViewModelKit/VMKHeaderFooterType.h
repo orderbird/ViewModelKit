@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-#import "VMKViewModel.h"
+#import <VMKViewModel.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

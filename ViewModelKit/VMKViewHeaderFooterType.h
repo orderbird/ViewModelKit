@@ -6,7 +6,7 @@
 //  Copyright © 2016 Andre Trettin. All rights reserved.
 //
 
-#import "VMKHeaderFooterType.h"
+#import <VMKHeaderFooterType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

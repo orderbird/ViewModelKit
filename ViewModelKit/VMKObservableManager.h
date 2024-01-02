@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-#import "VMKBindingUpdater.h"
+#import <VMKBindingUpdater.h>
 
 typedef NSDictionary<NSString *, VMKBindingUpdater *> VMKBindingDictionary;
 
