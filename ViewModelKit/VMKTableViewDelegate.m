@@ -84,11 +84,6 @@
     return [creator swipeActionsConfiguration];
 }
 
-- (nullable NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VMKTableViewRowActionCreator *creator = [self rowActionCreatorForTableView: tableView atIndexPath: indexPath];
-    return [creator tableViewRowActions];
-}
-
 #pragma mark - Forwarding unhandled methods to real delegate
 
 - (id)forwardingTargetForSelector:(SEL)selector {
