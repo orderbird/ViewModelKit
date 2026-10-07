@@ -16,6 +16,29 @@
 
 #import "VMKViewModel+Private.h"
 
+@interface FakeFoldableViewModel : VMKViewModel
+@property (nonatomic, assign) BOOL folded;
+@end
+
+@implementation FakeFoldableViewModel
+@end
+
+@interface FakeUnbindingInDeallocViewModelObserver : NSObject
+@property (nonatomic, strong) VMKViewModel *viewModel;
+- (void)foldedDidChange;
+@end
+
+@implementation FakeUnbindingInDeallocViewModelObserver
+
+- (void)dealloc {
+    [_viewModel unbindObserver:self];
+}
+
+- (void)foldedDidChange {
+}
+
+@end
+
 @interface VMKViewModelTests : XCTestCase
 @property (nonatomic, strong) VMKViewModel *sut;
 @property (nonatomic, strong) VMKObservableManager *mockObservableManager;
@@ -156,6 +179,19 @@
     [self.sut unbindObserver:self];
     
     [verifyCount(self.mockObservableManager, times(2)) removeBindingObserver:self];
+}
+
+- (void)testUnbindObserverFromObserversDeallocLetsViewModelDeallocate {
+    __weak FakeFoldableViewModel *weakViewModel;
+    @autoreleasepool {
+        FakeFoldableViewModel *viewModel = [[FakeFoldableViewModel alloc] init];
+        FakeUnbindingInDeallocViewModelObserver *observer = [[FakeUnbindingInDeallocViewModelObserver alloc] init];
+        observer.viewModel = viewModel;
+        [viewModel bindObject:observer updateAction:@selector(foldedDidChange) toKeyPath:NSStringFromSelector(@selector(folded))];
+        weakViewModel = viewModel;
+    }
+    
+    assertThat(weakViewModel, nilValue());
 }
 
 #pragma mark - unbindObserver:fromKeyPath;

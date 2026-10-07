@@ -56,6 +56,10 @@
     return self.observer == observer;
 }
 
+- (BOOL)hasObserver {
+    return self.observer != nil;
+}
+
 #pragma mark - NSObject
 
 - (NSString *)description {
