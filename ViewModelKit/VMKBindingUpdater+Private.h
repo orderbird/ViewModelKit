@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readwrite, nullable) NSDictionary<NSKeyValueChangeKey, id> *change;
 
 @property (weak, nonatomic) id observer;
+/// The observer's address, for identity comparison only - never dereferenced. Unlike `observer`,
+/// it survives the observer's deallocation (weak references are zeroed before -dealloc runs), so
+/// an observer can still unbind itself from its own -dealloc.
+@property (assign, nonatomic) const void *observerIdentity;
 @property (assign, nonatomic) SEL updateAction;
 @property (assign, nonatomic) BOOL updateActionsTakesBindingUpdaterParam;
 @end

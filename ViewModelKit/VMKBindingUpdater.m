@@ -24,6 +24,7 @@
     self = [super init];
     if (self) {
         _observer = observer;
+        _observerIdentity = (__bridge const void *)observer;
         _updateAction = updateAction;
         
         // determine if the update action takes a parameter
@@ -53,7 +54,9 @@
 }
 
 - (BOOL)isObserver:(id)observer {
-    return self.observer == observer;
+    // Compared by identity, not via the weak `observer`: during the observer's -dealloc the weak
+    // reference is already nil, so `unbindObserver:self` from -dealloc would never match.
+    return observer != nil && (__bridge const void *)observer == self.observerIdentity;
 }
 
 #pragma mark - NSObject
