@@ -52,6 +52,10 @@ NSUInteger const VMKObservableDefaultKVOOptions = (NSKeyValueObservingOptionNew 
     return [self.bindingUpdater isObserver:observer];
 }
 
+- (BOOL)hasObserver {
+    return [self.bindingUpdater hasObserver];
+}
+
 - (BOOL)isObject:(id)object {
     return self.object == object;
 }

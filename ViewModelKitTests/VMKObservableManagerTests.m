@@ -12,8 +12,26 @@
 
 #import "VMKObservableManager.h"
 #import "VMKObservableManager+Private.h"
+#import "VMKObservable+Private.h"
 #import "VMKBindingUpdater.h"
 #import "FakeObject.h"
+
+@interface FakeUnbindingInDeallocObserver : FakeObject
+@property (nonatomic, weak) VMKObservableManager *manager;
+@property (nonatomic, copy) NSString *keyPath;
+@end
+
+@implementation FakeUnbindingInDeallocObserver
+
+- (void)dealloc {
+    if (_keyPath) {
+        [_manager removeBindingObserver:self forKeyPath:_keyPath];
+    } else {
+        [_manager removeBindingObserver:self];
+    }
+}
+
+@end
 
 @interface VMKObservableManagerTests : XCTestCase
 @property (nonatomic, strong) VMKObservableManager *sut;
@@ -60,6 +78,24 @@
     [self.sut addObject:self.fakeObject2 forKeyPath:NSStringFromSelector(@selector(observableProperty2)) bindingUpdater:self.bindingUpdater2];
     
     [self.sut addObject:self.fakeObject3 forKeyPath:NSStringFromSelector(@selector(observableProperty3)) bindingUpdater:self.bindingUpdater3];
+}
+
+- (void)addObservableWithDeallocatedObserverForObject:(id)object keyPath:(NSString *)keyPath {
+    @autoreleasepool {
+        FakeObject *observer = [[FakeObject alloc] init];
+        VMKBindingUpdater *bindingUpdater = [[VMKBindingUpdater alloc] initWithObserver:observer updateAction:@selector(someAction)];
+        [self.sut addObject:object forKeyPath:keyPath bindingUpdater:bindingUpdater];
+    }
+}
+
+- (NSArray<VMKBindingUpdater *> *)bindingUpdatersForKeyPath:(NSString *)keyPath {
+    NSMutableArray<VMKBindingUpdater *> *bindingUpdaters = [[NSMutableArray alloc] init];
+    for (VMKObservable *observable in self.sut.observables) {
+        if ([observable isKeyPath:keyPath]) {
+            [bindingUpdaters addObject:observable.bindingUpdater];
+        }
+    }
+    return bindingUpdaters;
 }
 
 #pragma mark - init
@@ -195,6 +231,48 @@
     [self.sut removeBindingObserver:self.fakeObject3];
     
     assertThat(self.sut.observables, hasCountOf(5));
+}
+
+#pragma mark - deallocated observers
+
+- (void)testRemoveBindingObserverCalledFromObserversDeallocRemovesItsObservable {
+    [self addObjectsToSut];
+    @autoreleasepool {
+        FakeUnbindingInDeallocObserver *observer = [[FakeUnbindingInDeallocObserver alloc] init];
+        observer.manager = self.sut;
+        VMKBindingUpdater *bindingUpdater = [[VMKBindingUpdater alloc] initWithObserver:observer updateAction:@selector(someAction)];
+        [self.sut addObject:self.fakeObject forKeyPath:NSStringFromSelector(@selector(observableArray)) bindingUpdater:bindingUpdater];
+    }
+    
+    assertThat(self.sut.observables, hasCountOf(6));
+}
+
+- (void)testRemoveBindingObserverAlsoRemovesObservablesOfDeallocatedObservers {
+    [self addObjectsToSut];
+    [self addObservableWithDeallocatedObserverForObject:self.fakeObject keyPath:NSStringFromSelector(@selector(observableArray))];
+    
+    [self.sut removeBindingObserver:self.fakeObject3];
+    
+    assertThat(self.sut.observables, hasCountOf(5));
+}
+
+- (void)testRemoveBindingObserverForKeyPathCalledFromObserversDeallocRemovesOnlyItsBindingForThatKeyPath {
+    NSString *sharedKeyPath = NSStringFromSelector(@selector(observableArray));
+    NSString *otherKeyPath = NSStringFromSelector(@selector(observableProperty));
+    [self.sut addObject:self.fakeObject forKeyPath:sharedKeyPath bindingUpdater:self.bindingUpdater2];
+    VMKBindingUpdater *otherKeyPathBindingUpdater;
+    @autoreleasepool {
+        FakeUnbindingInDeallocObserver *observer = [[FakeUnbindingInDeallocObserver alloc] init];
+        observer.manager = self.sut;
+        observer.keyPath = sharedKeyPath;
+        VMKBindingUpdater *sharedKeyPathBindingUpdater = [[VMKBindingUpdater alloc] initWithObserver:observer updateAction:@selector(someAction)];
+        otherKeyPathBindingUpdater = [[VMKBindingUpdater alloc] initWithObserver:observer updateAction:@selector(someAction)];
+        [self.sut addObject:self.fakeObject forKeyPath:sharedKeyPath bindingUpdater:sharedKeyPathBindingUpdater];
+        [self.sut addObject:self.fakeObject forKeyPath:otherKeyPath bindingUpdater:otherKeyPathBindingUpdater];
+    }
+
+    assertThat([self bindingUpdatersForKeyPath:sharedKeyPath], containsIn(@[self.bindingUpdater2]));
+    assertThat([self bindingUpdatersForKeyPath:otherKeyPath], containsIn(@[otherKeyPathBindingUpdater]));
 }
 
 #pragma mark - removeObserverForObject

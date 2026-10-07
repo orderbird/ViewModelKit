@@ -70,7 +70,7 @@ typedef void (^VMKObservableBlock)(VMKObservable *observable, NSMutableArray *re
 - (void)removeBindingObserver:(id)observer {
     
     [self removeObserverWithBlock:^(VMKObservable *observable, NSMutableArray *removables) {
-        if ([observable isObserver:observer]) {
+        if ([observable isObserver:observer] || ![observable hasObserver]) {
             [removables addObject:observable];
         }
     }];
@@ -79,10 +79,8 @@ typedef void (^VMKObservableBlock)(VMKObservable *observable, NSMutableArray *re
 - (void)removeBindingObserver:(id)observer forKeyPath:(NSString *)keyPath {
     
     [self removeObserverWithBlock:^(VMKObservable *observable, NSMutableArray *removables) {
-        if ([observable isObserver:observer]) {
-            if ([observable isKeyPath:(NSString *)keyPath]) {
-                [removables addObject:observable];
-            }
+        if ([observable isKeyPath:(NSString *)keyPath] && ([observable isObserver:observer] || ![observable hasObserver])) {
+            [removables addObject:observable];
         }
     }];
 }

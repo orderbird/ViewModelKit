@@ -79,6 +79,22 @@
     assertThatBool(result, isFalse());
 }
 
+#pragma mark - hasObserver
+
+- (void)testHasObserverReturnsYESWhileObserverExists {
+    assertThatBool([self.sut hasObserver], isTrue());
+}
+
+- (void)testHasObserverReturnsNOAfterObserverIsDeallocated {
+    VMKBindingUpdater *sut;
+    @autoreleasepool {
+        FakeObject *observer = [[FakeObject alloc] init];
+        sut = [[VMKBindingUpdater alloc] initWithObserver:observer updateAction:@selector(someAction)];
+    }
+
+    assertThatBool([sut hasObserver], isFalse());
+}
+
 #pragma mark - description
 
 - (void)testDescriptionHasSubStringSelectorTestAction {

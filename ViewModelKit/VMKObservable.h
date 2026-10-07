@@ -75,6 +75,12 @@ extern NSUInteger const VMKObservableDefaultKVOOptions;
 - (BOOL)isObserver:(id)observer;
 
 /**
+ @brief Is the observer of the bindingUpdater still alive.
+ @return Whether the observer exists. Already NO while the observer runs its dealloc.
+ */
+- (BOOL)hasObserver;
+
+/**
  @brief Is the object the same one of this instance.
  @param object The object will be checked if it is the one that gets observed.
  @return Whether the objects are equal or not.
